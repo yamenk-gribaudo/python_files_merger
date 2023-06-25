@@ -1,0 +1,4 @@
+{
+    "python.formatting.provider": "none",
+    "python.formatting.autopep8Args": ["--max-line-length=120"]  
+}
