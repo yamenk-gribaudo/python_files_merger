@@ -9,3 +9,4 @@ docs/_build
 *.backup
 .python-version
 lint.txt
+unittests.*
