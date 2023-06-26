@@ -144,10 +144,3 @@ def parse(args):
     for file_path in file_paths:
         parsed_files.append(parse_file(file_path))
     return parsed_files
-
-
-if __name__ == "__main__":
-    # Get args
-    args = sys.argv
-    args.pop(0)  # Remove this file as arg
-    parse(args)

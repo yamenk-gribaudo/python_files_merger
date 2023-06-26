@@ -1,7 +1,5 @@
 import parser
 import os
-from glob import glob
-import sys
 import astunparse
 import re
 import circular_dependencies
@@ -14,15 +12,21 @@ ENDC = '\033[0m'
 def merge(args):
     # Get file paths using args
     file_paths = set()
+    no_python_files = False
     for arg in args:
-        if os.path.exists(arg):
-            file_paths_list = glob(arg, recursive=True)
-            for file_path in file_paths_list:
-                if os.path.exists(file_path) and os.path.isfile(file_path) and file_path.split(".")[len(file_path.split("."))-1] == 'py':
-                    file_paths.add(file_path)
+        if os.path.exists(arg) and os.path.isfile(arg):
+            if arg.split(".")[len(arg.split("."))-1] == 'py':
+                file_paths.add(arg)
+            else:
+                no_python_files = True
         else:
-            raise Exception(WARNING + arg + " do not exist, posible paths are \"" + "\",\"".join(os.listdir('.')) +
-                            "\" and its decendents" + ENDC)
+            print(WARNING + arg + " do not exist as path" + ENDC)
+        
+    if len(file_paths) == 0:
+        print(WARNING + "No files to merge" + ENDC)
+        if no_python_files:
+            print(WARNING + "There are some files not ending with '.py'" + ENDC)
+
     # Parse files
     parsed_files = []
     for file_path in file_paths:
@@ -191,14 +195,3 @@ def merge(args):
                     used_blocks.add(string)
                     final_string += string + "\n"
     return final_string
-
-
-if __name__ == "__main__":
-    # Get args
-    args = sys.argv
-    args.pop(0)  # Remove this file as arg
-    wat = merge(args)
-    file = open("output.py", "w")
-    file.write(wat)
-    file.close()
-

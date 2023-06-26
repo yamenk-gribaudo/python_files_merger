@@ -33,8 +33,3 @@ def remove_comments(source):
     out = '\n'.join(l for l in out.splitlines() if l.strip())
 
     return out
-
-if __name__ == "__main__":
-    file = open("backtracking/coloring.py")
-    print(remove_comments(file.read()))
-    file.close()
