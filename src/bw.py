@@ -72,3 +72,7 @@ def start(tokenString=None, tokenFilepath=None, configObject=None, configFilepat
     uasyncio.create_task(mes2())
     uasyncio.get_event_loop().set_exception_handler(asyncExceptionHandler)
     uasyncio.get_event_loop().run_forever()
+
+if __name__=="__main__":
+    var ="hello"
+    print(var + version)

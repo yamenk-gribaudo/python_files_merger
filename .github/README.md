@@ -18,4 +18,4 @@ ex:
 - Add test for parser
 - Improve circular dependencies (CDs) algorithm, it should return all the CDs instead of just the first one
 - Add definitions collition check before merging
-- Merge __name__ == "main" blocks when merging
+- Add test coverage

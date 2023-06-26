@@ -153,6 +153,24 @@ def merge(args):
     for node in removed_nodes:
         all_nodes.remove(node)
 
+
+
+    # Extract main module blocks to merge them and put them at the end
+    removed_nodes = []
+    main_block = ast.If()
+    setattr(main_block, 'test', None)
+    setattr(main_block, 'body', [])
+    setattr(main_block, 'orelse', None)
+    for node in all_nodes:
+        if isinstance(node['node'], ast.If):
+            if astunparse.unparse(node['node'].test).strip() == "(__name__ == '__main__')":
+                if main_block.test == None:
+                    main_block.test = node['node'].test
+                removed_nodes.append(node)
+                main_block.body += node['node'].body
+    for node in removed_nodes:
+        all_nodes.remove(node)    
+
     # Add everything else to final_string
     removed_nodes = []
     last_all_nodes_len = len(all_nodes)
@@ -194,4 +212,8 @@ def merge(args):
                 if string not in used_blocks:
                     used_blocks.add(string)
                     final_string += string + "\n"
+
+    # Add main block
+    final_string += astunparse.unparse(main_block).strip() + "\n"
+    
     return final_string
