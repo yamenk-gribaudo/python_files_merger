@@ -17,3 +17,4 @@
 - Add definitions collition before merging
 - Add output filepath as config argumment
 - Add things to repo to be able to publish it
+- Merge __name__ == "main" blocks when merging
