@@ -182,7 +182,7 @@ def merge(args):
         for node in all_nodes:
             for dependency in node['definitions']:
                 circular_dependencies_object.append({'parents': [dependency], 'dependencies': list(node['dependencies'])})
-        print(WARNING + "There are circular dependencies in some of the blocks to be merged: " + " -> ".join(circular_dependencies.check(circular_dependencies_object)) + ENDC)
+        print(WARNING + "There are circular dependencies in some of the blocks to be merged: " + " -> ".join(circular_dependencies.find(circular_dependencies_object)) + ENDC)
         # Merge block with circular dependencies anyway
         for node in all_nodes:
             if node not in removed_nodes:

@@ -12,7 +12,7 @@ def find_dependencies(dependencies, parent):
             return dependency["dependencies"]
     return []
 
-def check(dependencies, objects=[], iterations=0):
+def find(dependencies, objects=[], iterations=0):
     check_format(dependencies)
     check_format(objects)
     if iterations > len(dependencies):
@@ -27,4 +27,4 @@ def check(dependencies, objects=[], iterations=0):
                     return object['parents'] + [parent]
                 new_objects.append({"parents": object['parents'] + [
                                    dependency], 'dependencies': find_dependencies(dependencies, dependency)})
-    return check(dependencies, new_objects, iterations+1)
+    return find(dependencies, new_objects, iterations+1)

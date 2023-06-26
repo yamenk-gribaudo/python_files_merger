@@ -22,7 +22,7 @@ def getTime():
             response = (time.time_ns() - startTime) // (-1000000)
             return response
     except Exception as e:
-        sys.print_exception(e)
+        logger.logError(e)
 
 
 async def loopEpoc():

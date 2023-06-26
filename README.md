@@ -3,18 +3,17 @@
 [![Coverage Status](https://coveralls.io/repos/github/yamenk-gribaudo/python_files_merger/badge.svg?branch=master)](https://coveralls.io/github/yamenk-gribaudo/python_files_merger?branch=master)
 
 # Test
-    python -B -m unittest
+    python -m unittest
 
 # Merge files
     python python_files_merger/merger.py <folder>/*
 
 # TODOs:
-- Make the test work, right now, the circular_dependencies import in merger and the remove_comments import in parser are failing.
 - Add test for remove_comments
 - Add test for merger
 - Add test for parser
 - Improve circular dependencies (CDs) algorithm, it should return all the CDs instead of just the first one
-- Add definitions collition before merging
+- Add definitions collition check before merging
 - Add output filepath as config argumment
 - Add things to repo to be able to publish it
 - Merge __name__ == "main" blocks when merging
