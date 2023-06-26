@@ -29,7 +29,6 @@ jobs:
           # default set of ruff rules with GitHub Annotations
           ruff --format=github --target-version=py37 .
       - name: Test with pytest
-        uses: orgoro/coverage@v3.1
         run: python -m pytest --junitxml=unittests.xml
         with:
             coverageFile: unittests.xml
