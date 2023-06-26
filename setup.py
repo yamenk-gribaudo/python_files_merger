@@ -2,10 +2,10 @@ import os
 import re
 import setuptools
 
-NAME             = "python_file_merger"
-AUTHOR           = ""
+NAME             = "python_files_merger"
+AUTHOR           = "yyaammeennkk"
 AUTHOR_EMAIL     = "yyaammeennkk@gmail.com"
-DESCRIPTION      = "Python, MicroPython and CircuitPython file merger"
+DESCRIPTION      = "Python, MicroPython and CircuitPython files merger"
 LICENSE          = "MIT"
 KEYWORDS         = "merger files"
 URL              = "https://github.com/yamenk-gribaudo/" + NAME
@@ -13,6 +13,9 @@ README           = ".github/README.md"
 CLASSIFIERS      = [
   "Topic :: Text Processing :: General",
   "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
   
 ]
 INSTALL_REQUIRES = [

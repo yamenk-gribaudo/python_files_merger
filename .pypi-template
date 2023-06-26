@@ -5,11 +5,11 @@ classifiers:
 console_scripts: []
 first_year_of_publication: '2023'
 github_account: yamenk-gribaudo
-github_repo_name: python_file_merger
+github_repo_name: python_files_merger
 keywords_describing_the_package: merger files
 license: MIT
-package_module_name: python_file_merger
-package_name: python_file_merger
+package_module_name: python_files_merger
+package_name: python_files_merger
 package_tagline: ''
 package_title: python file merger
 requires: []
