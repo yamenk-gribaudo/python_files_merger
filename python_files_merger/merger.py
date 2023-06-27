@@ -21,7 +21,7 @@ def merge(args):
                 no_python_files = True
         else:
             print(WARNING + arg + " do not exist as path" + ENDC)
-        
+
     if len(file_paths) == 0:
         print(WARNING + "No files to merge" + ENDC)
         if no_python_files:
@@ -31,7 +31,7 @@ def merge(args):
     parsed_files = []
     for file_path in file_paths:
         parsed_files.append(parser.parse_file(file_path))
-    
+
     # Replace dependencies from 'from X import Y'
     for file in parsed_files:
         for import_ in file['from_imports']:
@@ -88,7 +88,6 @@ def merge(args):
                 if len(definition.split('.')) == 1:
                     node['definitions'].remove(definition)
                     node['definitions'].add(file['name'] + "." + definition)
-
 
     # Combine nodes
     all_nodes = []
@@ -153,8 +152,6 @@ def merge(args):
     for node in removed_nodes:
         all_nodes.remove(node)
 
-
-
     # Extract main module blocks to merge them and put them at the end
     removed_nodes = []
     main_block = ast.If()
@@ -175,13 +172,12 @@ def merge(args):
     removed_nodes = []
     last_all_nodes_len = len(all_nodes)
     while True:     
-        # Check if a all dependencies of a blocked and stisfied (not in any definition), and, 
+        # Check if a all dependencies of a blocked and stisfied (not in any definition), and,
         # in that case, add it to the final string and remove the node from the nodes to be merged
         for node in all_nodes:
             depedencies_stisfied = True
             for dependency in node['dependencies']:
-    
-                for node2 in all_nodes: 
+                for node2 in all_nodes:
                     if dependency in node2['definitions']:
                         depedencies_stisfied = False
             if depedencies_stisfied:

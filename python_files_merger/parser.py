@@ -1,6 +1,5 @@
 import ast
 import os
-import sys
 from glob import glob
 import builtins
 import remove_comments
@@ -11,6 +10,7 @@ ENDC = '\033[0m'
 built_ins = dir(__builtins__) + dir(builtins) + ["__builtins__"]
 built_ins.append(None)
 
+
 def get_definitions(root):
     definitions = set()
     for node in ast.walk(root):
@@ -18,7 +18,7 @@ def get_definitions(root):
             if isinstance(node, ast.Import) or isinstance(node, ast.ImportFrom):
                 for name in node.names:
                     final_name = name.asname if name.asname else name.name
-                    if final_name != "*": # This catchs the 'from <x> import *'
+                    if final_name != "*":  # This catchs the 'from <x> import *'
                         definitions.add(final_name)
             if isinstance(node, ast.FunctionDef) or isinstance(node, ast.AsyncFunctionDef):
                 definitions.add(node.name)
@@ -35,6 +35,7 @@ def get_definitions(root):
                         definitions.add(target_node.id)
     return definitions
 
+
 # This could be done a lot better
 def get_dependencies(node, definitions):
     scope_info = ast_scope.annotate(node)
@@ -45,6 +46,7 @@ def get_dependencies(node, definitions):
         if all_definition not in definitions and all_definition not in built_ins:
             dependencies.add(all_definition)
     return dependencies
+
 
 def parse_root(root, global_definitions):
     nodes = []
@@ -61,7 +63,8 @@ def parse_root(root, global_definitions):
         })
     if len(global_definitions) > 0:
         print(WARNING + "Some global symbol definitions couldnt be found: '" + "', '".join(global_definitions) + "'. You should report this." + ENDC)
-    return nodes  
+    return nodes
+
 
 def get_imports(string):
     imports = []
@@ -72,6 +75,7 @@ def get_imports(string):
                 imports.append({'name': name.name, 'asname': name.asname if name.asname else name.name})
     return imports
 
+
 def get_from_imports(string):
     imports = []
     root = ast.parse(string)
@@ -80,6 +84,7 @@ def get_from_imports(string):
             for name in node.names:
                 imports.append({'name': name.name, 'asname': name.asname if name.asname else name.name, 'module': node.module })
     return imports
+
 
 def add_scope(root):
     for node in ast.walk(root):
@@ -94,12 +99,12 @@ def add_scope(root):
                 break
         node.scope = scope
 
+
 def and_parent(root):
     for node in ast.walk(root):
         for child in ast.iter_child_nodes(node):
             child.parent = node
     root.parent = None
-
 
 
 def parse_string(string):
@@ -109,7 +114,8 @@ def parse_string(string):
     add_scope(root)
     global_definitions = get_definitions(root)
     parsed_nodes = parse_root(root, global_definitions)
-    return(parsed_nodes)
+    return parsed_nodes
+
 
 def parse_file(pathname):
     file = open(pathname)
@@ -126,6 +132,7 @@ def parse_file(pathname):
             definitions.add(dep)
     parsed_file["definitions"] = definitions
     return parsed_file
+
 
 def parse(args):
     # Get file paths using args

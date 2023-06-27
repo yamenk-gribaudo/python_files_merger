@@ -1,16 +1,19 @@
 import json
 
+
 def check_format(input):
     if isinstance(input, list):
         for inp in input:
             if 'parents' not in inp or 'dependencies' not in inp:
                 raise TypeError("Input must be formatted as [{'parents':['a',...], 'dependencies':['b',...]},...]")
-            
+
+
 def find_dependencies(dependencies, parent):
     for dependency in dependencies:
         if dependency['parents'] == [parent]:
             return dependency["dependencies"]
     return []
+
 
 def find(dependencies, objects=[], iterations=0):
     check_format(dependencies)

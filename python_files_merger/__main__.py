@@ -7,7 +7,7 @@ ENDC = '\033[0m'
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-o', '--output', type=str)
-    parser.add_argument('args',type=str, nargs="*")
+    parser.add_argument('args', type=str, nargs="*")
     args = parser.parse_args()
 
     merged_string = merger.merge(args.args)
@@ -19,4 +19,3 @@ if __name__ == "__main__":
         file.close()
         print("\n" + SUCCESS + "Merged!!!" + ENDC)
         print(SUCCESS + "Output was saved in " + output_file + ENDC)
-

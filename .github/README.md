@@ -2,15 +2,20 @@
 [![Documentation Status](https://readthedocs.org/projects/python_files_merger/badge/?version=latest)](https://python_files_merger.readthedocs.io/en/latest/?badge=latest)
 [![Coverage Status](https://coveralls.io/repos/github/yamenk-gribaudo/python_files_merger/badge.svg?branch=main)](https://coveralls.io/github/yamenk-gribaudo/python_files_merger?branch=main)
 
-# Test
-    python -m unittest
-
 # Merge files
-    python python_files_merger -o output.py <files_to_be_merged>
-ex: 
-    python python_files_merger -o output.py src/*
+    python python_files_merger src/*
+
+or
 
     python python_files_merger src/lorem.py src/ipsum.py
+
+# Lint
+
+    pylint python_files_merger
+
+# Test with coverage
+
+    python -m pytest --junitxml=unittests.xml
 
 # TODOs:
 - Add test for remove_comments
