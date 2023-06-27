@@ -28,7 +28,7 @@ def get_file_paths(args):
             raise FileNotFoundError(
                 "No files to be merged, there are some files not ending with '.py'")
         raise FileNotFoundError("No files to be merged")
-    return file_paths
+    return sorted(list(file_paths))
 
 
 def handle_from_import_dependencies(parsed_files):
@@ -237,6 +237,7 @@ def merge(args):
     # Parse files
     parsed_files = []
     for file_path in file_paths:
+        print(file_path)
         parsed_files.append(parse_file(file_path))
 
     # Replace dependencies from 'from X import Y'
