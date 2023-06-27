@@ -1,9 +1,9 @@
 # pylint: disable=no-member
 # pylint: disable=too-complex
 # pylint: disable=too-many-nested-blocks
-import os
 import ast
 import re
+from glob import glob
 import astunparse
 from .file_parser import parse
 from .circular_dependencies import find_circular_dependencies
@@ -15,20 +15,10 @@ ENDC = '\033[0m'
 
 def get_file_paths(args):
     file_paths = set()
-    no_python_files = False
     for arg in args:
-        if os.path.exists(arg) and os.path.isfile(arg):
-            if arg.split(".")[len(arg.split("."))-1] == 'py':
-                file_paths.add(arg)
-            else:
-                no_python_files = True
-        else:
-            print(WARNING + arg + " do not exist as path" + ENDC)
-    if len(file_paths) == 0:
-        if no_python_files:
-            raise FileNotFoundError(
-                "No files to be merged, there are some files not ending with '.py'")
-        raise FileNotFoundError("No files to be merged")
+        for file in glob(arg, recursive=True):
+            if file.split(".")[len(file.split("."))-1] == 'py':
+                file_paths.add(file)
     return sorted(list(file_paths))
 
 
@@ -234,6 +224,9 @@ def problematic_nodes_to_string(nodes):
 
 def merge(raw_filepaths, output=None):
     file_paths = get_file_paths(raw_filepaths)
+    if len(file_paths) == 0:
+        print(WARNING + "No python files to be merged" + ENDC)
+        return ""
 
     # Parse files
     parsed_files = []
