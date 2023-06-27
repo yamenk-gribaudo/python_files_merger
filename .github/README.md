@@ -52,8 +52,6 @@ Coverage and create coverage badge:
 
 ## TODOs:
 
-- Add test for remove_comments
 - Add test for merger
-- Add test for parser
 - Improve circular dependencies (CDs) algorithm, it should return all the CDs instead of just the first one
 - Add badges generation in github workflow
