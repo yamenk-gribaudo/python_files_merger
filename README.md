@@ -10,6 +10,10 @@ or
 
 # Contributing 
 
+## Developing
+
+You can download the repo and run the merger with `python -m python_files_merger <files_to_merge>`
+
 ## Lint
 
     pylint python_files_merger
@@ -27,6 +31,7 @@ Coverage and create coverage badge:
     coverage run --source=python_files_merger -m unittest discover && coverage report && coverage html && coverage xml -o reports/coverage/coverage.xml && genbadge coverage -o reports/coverage-badge.svg
 
 ## TODOs:
+
 - Add test for remove_comments
 - Add test for merger
 - Add test for parser
