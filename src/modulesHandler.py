@@ -22,6 +22,10 @@ def generateModuleInstances(modulesConfig):
     return moduleInstances
 
 
+def addState(msg):
+    print("yah")
+
+
 def getDevice():
     device = {}
     system = os.uname()

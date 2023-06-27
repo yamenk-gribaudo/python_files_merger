@@ -7,6 +7,7 @@ from glob import glob
 import astunparse
 from .file_parser import parse
 from .circular_dependencies import find_circular_dependencies
+import json
 
 SUCCESS = '\033[32m'
 WARNING = '\033[33m'
@@ -204,14 +205,13 @@ def problematic_nodes_to_string(nodes):
     removed_nodes = []
     used_blocks = set()
     if len(nodes) > 0:
-        # Check cicular dependencies here
         circular_dependencies_object = []
         for node in nodes:
             for dependency in node['definitions']:
                 circular_dependencies_object.append(
                     {'parents': [dependency], 'dependencies': list(node['dependencies'])})
-        print(WARNING + "There are circular dependencies in some of the blocks to be merged: " +
-              " -> ".join(find_circular_dependencies(circular_dependencies_object)) + ENDC)
+        print(WARNING + "\n" + "CIRCULAR DEPENDENCIES: There are circular dependencies in some of the blocks to be merged, the first one is:\n" +
+              "   - " + " -> ".join(find_circular_dependencies(circular_dependencies_object)) + ENDC)
         # Merge block with circular dependencies anyway
         for node in nodes:
             if node not in removed_nodes:
@@ -220,6 +220,26 @@ def problematic_nodes_to_string(nodes):
                     used_blocks.add(string)
                     final_string += string + "\n"
     return final_string
+
+
+def check_collitions(nodes):
+    collitions = set()
+    for node in nodes:
+        for node2 in nodes:
+            for definition in node['definitions']:
+                for definition2 in node2['definitions']:
+                    if (definition.split(".")[0] != definition2.split(".")[0]) and (definition.split(".")[1] == definition2.split(".")[1]):
+                        collitions.add(json.dumps(
+                            sorted((definition, definition2))))
+    if len(collitions) > 0:
+        print(WARNING + "\n" + "DEFINITION COLLITIONS: There are definition collitions in your files, you should change the naem of the conflicting definitions:" + ENDC)
+        for raw_collition in collitions:
+            collition = json.loads(raw_collition)
+            first_module = collition[0].split(".")[0]
+            second_module = collition[1].split(".")[0]
+            collition_name = collition[0].split(".")[1]
+            print(WARNING + "   - '" + collition_name + "' is used as definition name by " +
+                  first_module + " and " + second_module + ENDC)
 
 
 def merge(raw_filepaths, output=None):
@@ -253,6 +273,9 @@ def merge(raw_filepaths, output=None):
 
     # Add imports to final_string
     final_string = add_imports(nodes, parsed_files)
+
+    # Check collitions
+    check_collitions(nodes)
 
     # Add everything else to final_string
     final_string += nodes_to_string(nodes)

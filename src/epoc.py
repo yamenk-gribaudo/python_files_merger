@@ -25,6 +25,10 @@ def getTime():
         logger.logError(e)
 
 
+def log(log):
+    print(log)
+
+
 async def loopEpoc():
     global timeIsSet
     global finishTime
@@ -49,6 +53,6 @@ async def loopEpoc():
 
 uasyncio.create_task(loopEpoc())
 
-if __name__=="__main__":
-    var2 ="hello2"
+if __name__ == "__main__":
+    var2 = "hello2"
     print(var2 + timeIsSet)
