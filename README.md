@@ -1,5 +1,5 @@
-[![tests](./reports/tests-badge.svg)](https://htmlpreview.github.io/?https://github.com/yamenk-gribaudo/python_files_merger/blob/master/reports/junit/report.html)
-[![coverage](./reports/coverage-badge.svg)](https://htmlpreview.github.io/?https://github.com/yamenk-gribaudo/python_files_merger/blob/master/htmlcov/index.html)
+[![tests](https://htmlpreview.github.io/?https://github.com/yamenk-gribaudo/python_files_merger/reports/tests-badge.svg)](https://htmlpreview.github.io/?https://github.com/yamenk-gribaudo/python_files_merger/blob/master/reports/junit/report.html)
+[![coverage](https://htmlpreview.github.io/?https://github.com/yamenk-gribaudo/python_files_merger/reports/coverage-badge.svg)](https://htmlpreview.github.io/?https://github.com/yamenk-gribaudo/python_files_merger/blob/master/htmlcov/index.html)
 
 # Merge files
     python python_files_merger src/*
