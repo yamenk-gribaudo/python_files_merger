@@ -1,17 +1,12 @@
-import sys
-import os
-sys.path.append(os.getcwd() + "/python_files_merger")
-print(sys.path)
-# pylint: disable=wrong-import-position
-import merger
-import circular_dependencies
+from .circular_dependencies import find
+from .merger import merge as mergermerge
 
-__version__ = "0.0.1"
+__version__ = "1.0.9"
 
 
 def merge(args):
-    return merger.merge(args)
+    return mergermerge(args)
 
 
 def find_circular_dependencies(args):
-    return circular_dependencies.find(args)
+    return find(args)

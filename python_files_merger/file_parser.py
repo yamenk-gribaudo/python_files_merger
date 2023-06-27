@@ -2,8 +2,8 @@ import ast
 import os
 from glob import glob
 import builtins
-import remove_comments
 import ast_scope
+from .remove_comments import remove_comments
 
 WARNING = '\033[33m'
 ENDC = '\033[0m'
@@ -11,6 +11,8 @@ built_ins = dir(__builtins__) + dir(builtins) + ["__builtins__"]
 built_ins.append(None)
 
 # pylint: disable=too-complex
+
+
 def get_definitions(root):
     definitions = set()
     # pylint: disable=too-many-nested-blocks
@@ -39,6 +41,8 @@ def get_definitions(root):
 # pylint: enable=too-many-nested-blocks
 
 # This could be done a lot better
+
+
 def get_dependencies(node, definitions):
     scope_info = ast_scope.annotate(node)
     all_definitions = scope_info.static_dependency_graph.nodes()
@@ -59,12 +63,13 @@ def parse_root(root, global_definitions):
             if definition in global_definitions:
                 global_definitions.remove(definition)
         nodes.append({
-            'node': node, 
-            'definitions': definitions, 
+            'node': node,
+            'definitions': definitions,
             'dependencies': dependencies
         })
     if len(global_definitions) > 0:
-        print(WARNING + "Some global symbol definitions couldnt be found: '" + "', '".join(global_definitions) + "'. You should report this." + ENDC)
+        print(WARNING + "Some global symbol definitions couldnt be found: '" +
+              "', '".join(global_definitions) + "'. You should report this." + ENDC)
     return nodes
 
 
@@ -74,7 +79,8 @@ def get_imports(string):
     for node in ast.walk(root):
         if isinstance(node, ast.Import):
             for name in node.names:
-                imports.append({'name': name.name, 'asname': name.asname if name.asname else name.name})
+                imports.append(
+                    {'name': name.name, 'asname': name.asname if name.asname else name.name})
     return imports
 
 
@@ -84,7 +90,8 @@ def get_from_imports(string):
     for node in ast.walk(root):
         if isinstance(node, ast.ImportFrom):
             for name in node.names:
-                imports.append({'name': name.name, 'asname': name.asname if name.asname else name.name, 'module': node.module })
+                imports.append(
+                    {'name': name.name, 'asname': name.asname if name.asname else name.name, 'module': node.module})
     return imports
 
 
@@ -110,7 +117,7 @@ def and_parent(root):
 
 
 def parse_string(string):
-    string_without_comments = remove_comments.remove_comments(string)
+    string_without_comments = remove_comments(string)
     root = ast.parse(string_without_comments)
     and_parent(root)
     add_scope(root)
@@ -123,11 +130,12 @@ def parse_file(pathname):
     with open(pathname, "r", encoding='UTF-8') as file:
         string = file.read()
         parsed_file = {}
-        parsed_file["name"] = file.name.split("/")[len(file.name.split("/"))-1].split(".")[len(file.name.split("."))-2]
+        parsed_file["name"] = file.name.split(
+            "/")[len(file.name.split("/"))-1].split(".")[len(file.name.split("."))-2]
         parsed_file["filepath"] = file.name
-        parsed_file["imports"] =  get_imports(string)
-        parsed_file["from_imports"] =  get_from_imports(string)
-        parsed_file["nodes"] =  parse_string(string)
+        parsed_file["imports"] = get_imports(string)
+        parsed_file["from_imports"] = get_from_imports(string)
+        parsed_file["nodes"] = parse_string(string)
         definitions = set()
         for node in parsed_file["nodes"]:
             for dep in node['definitions']:

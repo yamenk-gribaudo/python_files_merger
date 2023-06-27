@@ -5,7 +5,8 @@ def check_format(cds):
     if isinstance(cds, list):
         for cd in cds:
             if 'parents' not in cd or 'dependencies' not in cd:
-                raise TypeError("Input must be formatted as [{'parents':['a',...], 'dependencies':['b',...]},...]")
+                raise TypeError(
+                    "Input must be formatted as [{'parents':['a',...], 'dependencies':['b',...]},...]")
 
 
 def find_dependencies(dependencies, parent):

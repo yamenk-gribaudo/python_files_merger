@@ -3,4 +3,7 @@
   "python.linting.pylintEnabled": true,
   "python.linting.enabled": true,
   "python.linting.flake8Enabled": false,
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.autopep8"
+  },
 }

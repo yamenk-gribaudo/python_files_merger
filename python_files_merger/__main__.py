@@ -1,5 +1,5 @@
 import argparse
-import merger
+from .merger import merge
 
 SUCCESS = '\033[32m'
 ENDC = '\033[0m'
@@ -10,7 +10,7 @@ if __name__ == "__main__":
     parser.add_argument('args', type=str, nargs="*")
     args = parser.parse_args()
 
-    merged_string = merger.merge(args.args)
+    merged_string = merge(args.args)
 
     if merged_string != "":
         output_file = args.output if args.output is not None else "output.py"

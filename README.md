@@ -2,11 +2,11 @@
 [![coverage](https://htmlpreview.github.io/?https://github.com/yamenk-gribaudo/python_files_merger/reports/coverage-badge.svg)](https://htmlpreview.github.io/?https://github.com/yamenk-gribaudo/python_files_merger/blob/master/htmlcov/index.html)
 
 # Merge files
-    python python_files_merger src/*
+    python -m python_files_merger src/*
 
 or
 
-    python python_files_merger src/lorem.py src/ipsum.py
+    python -m python_files_merger src/lorem.py src/ipsum.py
 
 # Contributing 
 

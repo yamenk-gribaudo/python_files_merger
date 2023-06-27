@@ -1,6 +1,7 @@
 import io
 import tokenize
 
+
 def remove_comments(source):
     io_obj = io.StringIO(source)
     out = ""
