@@ -292,8 +292,8 @@ def merge(raw_filepaths, output=None):
             with open(output, "w", encoding='UTF-8') as file:
                 file.write(final_string)
                 file.close()
-                print("\n" + SUCCESS + "Merged!!!" + ENDC)
-                print(SUCCESS + "Output was saved in " + output + ENDC)
+                print("\n" + SUCCESS +
+                      "MERGED!!! Output was saved in " + output + ENDC)
     else:
         print("\n" + WARNING + "Output string is null" + ENDC)
 

@@ -56,5 +56,4 @@ Coverage and create coverage badge:
 - Add test for merger
 - Add test for parser
 - Improve circular dependencies (CDs) algorithm, it should return all the CDs instead of just the first one
-- Add definitions collition check before merging
 - Add badges generation in github workflow
