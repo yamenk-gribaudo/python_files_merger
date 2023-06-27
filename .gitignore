@@ -10,4 +10,3 @@ docs/_build
 .python-version
 lint.txt
 unittests.*
-reports/*

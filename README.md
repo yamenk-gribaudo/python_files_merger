@@ -1,7 +1,6 @@
 [![Build Status](https://secure.travis-ci.org/yamenk-gribaudo/python_files_merger.svg?branch=main)](http://travis-ci.org/christophevg/python_files_merger)
-[![Documentation Status](https://readthedocs.org/projects/python_files_merger/badge/?version=latest)](https://python_files_merger.readthedocs.io/en/latest/?badge=latest)
-[![Tests Status](./tests-badge.svg)](./tests-badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/yamenk-gribaudo/python_files_merger/coverage.svg?branch=main)](https://coveralls.io/github/yamenk-gribaudo/python_files_merger?branch=main)
+[![Tests Status](./reports/tests-badge.svg)](./reports/tests-badge.svg)
+[![Coverage Status](./reports/coverage-badge)](./reports/coverage-badge)
 
 # Merge files
     python python_files_merger src/*
