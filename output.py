@@ -1,9 +1,6 @@
-import json, uasyncio, os, time, ntptime, sys, machine, json as js
+import os, json, uasyncio, json as js, sys, machine, time, ntptime
 messengerReady = False
 msgQueue = []
-timeIsSet = False
-startTime = time.time_ns()
-finishTime = 0
 def get_values(raw_values, previous_states, current_states):
     values = []
     for raw_value in raw_values:
@@ -23,10 +20,6 @@ def compare_states(first_state, second_state):
         elif (first_state != second_state):
             return False
     return True
-logs = []
-logsDirectory = 'logs'
-def formatTime(t):
-    return ((((((((((str(t[0]) + '/') + str(t[1])) + '/') + str(t[2])) + ' ') + str(t[4])) + ':') + str(t[5])) + ':') + str(t[6]))
 version = 1
 internetIsConnected = False
 token = None
@@ -39,6 +32,13 @@ globalConfigFilepath = None
 automations = None
 modulesConfig = None
 modules = []
+logs = []
+logsDirectory = 'logs'
+def formatTime(t):
+    return ((((((((((str(t[0]) + '/') + str(t[1])) + '/') + str(t[2])) + ' ') + str(t[4])) + ':') + str(t[5])) + ':') + str(t[6]))
+timeIsSet = False
+startTime = time.time_ns()
+finishTime = 0
 def check_conditions(conditions, previous_states, current_states):
     for condition in conditions:
         values = get_values(condition['values'], previous_states, current_states)
@@ -89,6 +89,46 @@ def logInfo(info):
     except Exception as e:
         sys.print_exception(e)
 createLogFiles()
+def generateModuleInstances(modulesConfig):
+    Modules = {}
+    for file in os.listdir('modules'):
+        moduleName = ''.join(file.split('.')[:(- 1)])
+        Modules[moduleName] = __import__(('modules/' + moduleName)).Module
+    moduleInstances = {}
+    for module in modulesConfig:
+        try:
+            moduleInstances[module['id']] = Modules[module['type']](module)
+        except Exception as e:
+            logWarn(e)
+    return moduleInstances
+def getDevice():
+    device = {}
+    system = os.uname()
+    device['config'] = config
+    device['board'] = system[0]
+    device['mp'] = system[2]
+    device['apiVersion'] = version
+    device['moduleVersions'] = getModuleVersions()
+    return device
+def getModuleVersions():
+    versions = {}
+    for file in os.listdir('modules'):
+        moduleName = ''.join(file.split('.')[:(- 1)])
+        if hasattr(__import__(('modules/' + moduleName)), 'version'):
+            versions[moduleName] = __import__(('modules/' + moduleName)).version
+        else:
+            logWarn((moduleName + ' module has no version'))
+            versions[moduleName] = 'undefined'
+    return versions
+def updateState(msg):
+    try:
+        msg = json.loads(msg)
+        module_id = msg['module_id']
+        new_state = json.loads(msg['new_state'])
+        log(('Updating %s state with %s' % (module_id, new_state)))
+        modules[module_id].updateState(new_state)
+    except Exception as e:
+        logError(e)
 def addState(msg):
     try:
         if (len(msgQueue) <= 50):
@@ -166,76 +206,6 @@ def updateFile(fileName, content):
         logInfo(("File '%s' updated" % fileName))
     except Exception as e:
         logFatal(e)
-def generateModuleInstances(modulesConfig):
-    Modules = {}
-    for file in os.listdir('modules'):
-        moduleName = ''.join(file.split('.')[:(- 1)])
-        Modules[moduleName] = __import__(('modules/' + moduleName)).Module
-    moduleInstances = {}
-    for module in modulesConfig:
-        try:
-            moduleInstances[module['id']] = Modules[module['type']](module)
-        except Exception as e:
-            logWarn(e)
-    return moduleInstances
-def getDevice():
-    device = {}
-    system = os.uname()
-    device['config'] = config
-    device['board'] = system[0]
-    device['mp'] = system[2]
-    device['apiVersion'] = version
-    device['moduleVersions'] = getModuleVersions()
-    return device
-def getModuleVersions():
-    versions = {}
-    for file in os.listdir('modules'):
-        moduleName = ''.join(file.split('.')[:(- 1)])
-        if hasattr(__import__(('modules/' + moduleName)), 'version'):
-            versions[moduleName] = __import__(('modules/' + moduleName)).version
-        else:
-            logWarn((moduleName + ' module has no version'))
-            versions[moduleName] = 'undefined'
-    return versions
-def updateState(msg):
-    try:
-        msg = json.loads(msg)
-        module_id = msg['module_id']
-        new_state = json.loads(msg['new_state'])
-        log(('Updating %s state with %s' % (module_id, new_state)))
-        modules[module_id].updateState(new_state)
-    except Exception as e:
-        logError(e)
-def getTime():
-    try:
-        if timeIsSet:
-            return ((time.time_ns() // 1000000) + 946684800000)
-        else:
-            response = ((time.time_ns() - startTime) // (- 1000000))
-            return response
-    except Exception as e:
-        logError(e)
-async def loopEpoc():
-    global timeIsSet
-    global finishTime
-    n = 0
-    while True:
-        try:
-            (await uasyncio.sleep(0.1))
-            if (timeIsSet is True):
-                break
-            if (internetIsConnected is True):
-                n = (n + 1)
-                finishTime = ((time.time_ns() - startTime) // 1000000)
-                ntptime.settime()
-                timeIsSet = True
-                logInfo('Time is set')
-        except Exception as e:
-            if (n < 4):
-                logError(e)
-            else:
-                logFatal(e)
-uasyncio.create_task(loopEpoc())
 def execute_action(actions, current_states):
     for action in actions:
         if (action['type'] == 'updateState'):
@@ -260,38 +230,6 @@ async def loopAuto(automations, current_states):
                 previous_states = json.loads(json.dumps(current_states))
         except Exception as e:
             logFatal(e)
-def logWarn(warn):
-    try:
-        print('WARN:', end=' ')
-        sys.print_exception(warn)
-        log(warn)
-        logsToFile(warnFilename)
-        addErrorToQueue(warn, 'warn')
-    except Exception as e:
-        sys.print_exception(e)
-def logError(error):
-    try:
-        print('ERROR:', end=' ')
-        sys.print_exception(error)
-        log(error)
-        logsToFile(errorFilename)
-        addErrorToQueue(error, 'error')
-    except Exception as e:
-        sys.print_exception(e)
-def logFatal(fatal):
-    try:
-        print('FATAL:', end=' ')
-        sys.print_exception(fatal)
-        log(fatal)
-        logsToFile(fatalFilename)
-        addErrorToQueue(fatal, 'fatal')
-        uasyncio.sleep(1)
-        machine.reset()
-    except Exception as e:
-        sys.print_exception(e)
-def addErrorToQueue(error, level):
-    msg = {'method': 'addLog', 'time': getTime(), 'data': json.dumps({'level': level, 'error': str(error)})}
-    msgQueue.append(msg)
 async def automationsLoop():
     moduleStates = {}
     for (_, module) in modules.items():
@@ -328,8 +266,70 @@ def start(tokenString=None, tokenFilepath=None, configObject=None, configFilepat
     uasyncio.create_task(startSender())
     uasyncio.get_event_loop().set_exception_handler(asyncExceptionHandler)
     uasyncio.get_event_loop().run_forever()
+def logWarn(warn):
+    try:
+        print('WARN:', end=' ')
+        sys.print_exception(warn)
+        log(warn)
+        logsToFile(warnFilename)
+        addErrorToQueue(warn, 'warn')
+    except Exception as e:
+        sys.print_exception(e)
+def logError(error):
+    try:
+        print('ERROR:', end=' ')
+        sys.print_exception(error)
+        log(error)
+        logsToFile(errorFilename)
+        addErrorToQueue(error, 'error')
+    except Exception as e:
+        sys.print_exception(e)
+def logFatal(fatal):
+    try:
+        print('FATAL:', end=' ')
+        sys.print_exception(fatal)
+        log(fatal)
+        logsToFile(fatalFilename)
+        addErrorToQueue(fatal, 'fatal')
+        uasyncio.sleep(1)
+        machine.reset()
+    except Exception as e:
+        sys.print_exception(e)
+def addErrorToQueue(error, level):
+    msg = {'method': 'addLog', 'time': getTime(), 'data': json.dumps({'level': level, 'error': str(error)})}
+    msgQueue.append(msg)
+def getTime():
+    try:
+        if timeIsSet:
+            return ((time.time_ns() // 1000000) + 946684800000)
+        else:
+            response = ((time.time_ns() - startTime) // (- 1000000))
+            return response
+    except Exception as e:
+        logError(e)
+async def loopEpoc():
+    global timeIsSet
+    global finishTime
+    n = 0
+    while True:
+        try:
+            (await uasyncio.sleep(0.1))
+            if (timeIsSet is True):
+                break
+            if (internetIsConnected is True):
+                n = (n + 1)
+                finishTime = ((time.time_ns() - startTime) // 1000000)
+                ntptime.settime()
+                timeIsSet = True
+                logInfo('Time is set')
+        except Exception as e:
+            if (n < 4):
+                logError(e)
+            else:
+                logFatal(e)
+uasyncio.create_task(loopEpoc())
 if (__name__ == '__main__'):
-    var2 = 'hello2'
-    print((var2 + timeIsSet))
     var = 'hello'
     print((var + version))
+    var2 = 'hello2'
+    print((var2 + timeIsSet))

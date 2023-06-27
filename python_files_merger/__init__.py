@@ -2,6 +2,7 @@ import sys
 import os
 sys.path.append(os.getcwd() + "/python_files_merger")
 
+# pylint: disable=wrong-import-position
 import merger
 import circular_dependencies
 

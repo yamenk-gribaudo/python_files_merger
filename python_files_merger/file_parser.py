@@ -10,17 +10,18 @@ ENDC = '\033[0m'
 built_ins = dir(__builtins__) + dir(builtins) + ["__builtins__"]
 built_ins.append(None)
 
-
+# pylint: disable=too-complex
 def get_definitions(root):
     definitions = set()
+    # pylint: disable=too-many-nested-blocks
     for node in ast.walk(root):
         if node.scope == "global":
-            if isinstance(node, ast.Import) or isinstance(node, ast.ImportFrom):
+            if isinstance(node, (ast.Import, ast.ImportFrom)):
                 for name in node.names:
                     final_name = name.asname if name.asname else name.name
                     if final_name != "*":  # This catchs the 'from <x> import *'
                         definitions.add(final_name)
-            if isinstance(node, ast.FunctionDef) or isinstance(node, ast.AsyncFunctionDef):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 definitions.add(node.name)
             if isinstance(node, ast.ClassDef):
                 definitions.add(node.name)
@@ -34,7 +35,8 @@ def get_definitions(root):
                     if hasattr(target_node, 'id'):
                         definitions.add(target_node.id)
     return definitions
-
+# pylint: enable=too-complex
+# pylint: enable=too-many-nested-blocks
 
 # This could be done a lot better
 def get_dependencies(node, definitions):
@@ -92,7 +94,7 @@ def add_scope(root):
         current_node = node.parent
         while True:
             if current_node:
-                if isinstance(current_node, ast.FunctionDef) or isinstance(current_node, ast.AsyncFunctionDef) or isinstance(current_node, ast.ClassDef):
+                if isinstance(current_node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
                     scope = "local"
                 current_node = current_node.parent
             else:
@@ -118,20 +120,21 @@ def parse_string(string):
 
 
 def parse_file(pathname):
-    file = open(pathname)
-    string = file.read()
-    parsed_file = {}
-    parsed_file["name"] = file.name.split("/")[len(file.name.split("/"))-1].split(".")[len(file.name.split("."))-2]
-    parsed_file["filepath"] = file.name
-    parsed_file["imports"] =  get_imports(string)
-    parsed_file["from_imports"] =  get_from_imports(string)
-    parsed_file["nodes"] =  parse_string(string)
-    definitions = set()
-    for node in parsed_file["nodes"]:
-        for dep in node['definitions']:
-            definitions.add(dep)
-    parsed_file["definitions"] = definitions
-    return parsed_file
+    with open(pathname, "r", encoding='UTF-8') as file:
+        string = file.read()
+        parsed_file = {}
+        parsed_file["name"] = file.name.split("/")[len(file.name.split("/"))-1].split(".")[len(file.name.split("."))-2]
+        parsed_file["filepath"] = file.name
+        parsed_file["imports"] =  get_imports(string)
+        parsed_file["from_imports"] =  get_from_imports(string)
+        parsed_file["nodes"] =  parse_string(string)
+        definitions = set()
+        for node in parsed_file["nodes"]:
+            for dep in node['definitions']:
+                definitions.add(dep)
+        parsed_file["definitions"] = definitions
+
+        return parsed_file
 
 
 def parse(args):
@@ -144,8 +147,7 @@ def parse(args):
                 if os.path.exists(file_path) and os.path.isfile(file_path) and file_path.split(".")[len(file_path.split("."))-1] == 'py':
                     file_paths.add(file_path)
         else:
-            raise Exception(arg + " do not exist, posible paths are \"" + "\",\"".join(os.listdir('.')) +
-                            "\" and its decendents")
+            print(WARNING + arg + " path do not exist" + ENDC)
     # Parse files
     parsed_files = []
     for file_path in file_paths:

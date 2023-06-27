@@ -1,5 +1,5 @@
-import merger
 import argparse
+import merger
 
 SUCCESS = '\033[32m'
 ENDC = '\033[0m'
@@ -14,8 +14,8 @@ if __name__ == "__main__":
 
     if merged_string != "":
         output_file = args.output if args.output is not None else "output.py"
-        file = open(output_file, "w")
-        file.write(merged_string)
-        file.close()
-        print("\n" + SUCCESS + "Merged!!!" + ENDC)
-        print(SUCCESS + "Output was saved in " + output_file + ENDC)
+        with open(output_file, "w", encoding='UTF-8') as file:
+            file.write(merged_string)
+            file.close()
+            print("\n" + SUCCESS + "Merged!!!" + ENDC)
+            print(SUCCESS + "Output was saved in " + output_file + ENDC)

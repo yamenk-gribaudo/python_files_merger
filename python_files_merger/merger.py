@@ -1,16 +1,17 @@
-import parser
+# pylint: disable=no-member
+# pylint: disable=too-complex
+# pylint: disable=too-many-nested-blocks
 import os
-import astunparse
-import re
-import circular_dependencies
 import ast
+import re
+import file_parser
+import astunparse
+import circular_dependencies
 
 WARNING = '\033[33m'
 ENDC = '\033[0m'
 
-
-def merge(args):
-    # Get file paths using args
+def get_file_paths(args):
     file_paths = set()
     no_python_files = False
     for arg in args:
@@ -21,18 +22,14 @@ def merge(args):
                 no_python_files = True
         else:
             print(WARNING + arg + " do not exist as path" + ENDC)
-
     if len(file_paths) == 0:
         print(WARNING + "No files to merge" + ENDC)
         if no_python_files:
             print(WARNING + "There are some files not ending with '.py'" + ENDC)
+    return file_paths
 
-    # Parse files
-    parsed_files = []
-    for file_path in file_paths:
-        parsed_files.append(parser.parse_file(file_path))
 
-    # Replace dependencies from 'from X import Y'
+def handle_from_import_dependencies(parsed_files):
     for file in parsed_files:
         for import_ in file['from_imports']:
             for node in file['nodes']:
@@ -44,17 +41,17 @@ def merge(args):
                                     if other_file_definition == node_dependency and node_dependency not in file['definitions']:
                                         node['dependencies'].remove(node_dependency)
                                         node['dependencies'].add(parsed_file['name'] + "." + node_dependency)
-                        else:
-                            if import_['asname'] in node['dependencies']:
-                                string = astunparse.unparse(node['node'])
-                                regex = "(?<![a-zA-Z0-9_.])" + import_['asname'] + "(?![a-zA-Z0-9_])"
-                                node['node'] = ast.parse(re.sub(regex, import_['name'], string))
-                                for dependency in node['dependencies']:
-                                    if dependency == import_['asname']:
-                                        node['dependencies'].remove(dependency)
-                                        node['dependencies'].add(import_['module'] + "." + import_['name'])
+                        elif import_['asname'] in node['dependencies']:
+                            string = astunparse.unparse(node['node'])
+                            regex = "(?<![a-zA-Z0-9_.])" + import_['asname'] + "(?![a-zA-Z0-9_])"
+                            node['node'] = ast.parse(re.sub(regex, import_['name'], string))
+                            for dependency in node['dependencies']:
+                                if dependency == import_['asname']:
+                                    node['dependencies'].remove(dependency)
+                                    node['dependencies'].add(import_['module'] + "." + import_['name'])
 
-    # Replace dependencies from other files: <dependency> -> <imported_name>.<dependency>
+
+def handle_imports_from_other_files(parsed_files):
     for file in parsed_files:
         for file2 in parsed_files:
             if file['filepath'] != file2['filepath']:
@@ -77,7 +74,8 @@ def merge(args):
                             if import_['asname'] in node['dependencies']:
                                 node['dependencies'].remove(import_['asname'])
 
-    # Replace dependencies from same file: <dependency> -> <name>.<dependency>
+
+def replace_dependencies_from_same_file(parsed_files):
     for file in parsed_files:
         for node in file['nodes']:
             for dependency in node['dependencies']:
@@ -89,13 +87,8 @@ def merge(args):
                     node['definitions'].remove(definition)
                     node['definitions'].add(file['name'] + "." + definition)
 
-    # Combine nodes
-    all_nodes = []
-    for file in parsed_files:
-        for node in file['nodes']:
-            all_nodes.append(node)     
 
-    # Add imports to final_string
+def add_imports(nodes, parsed_files):
     final_string = ""
     used_blocks = set()  
     removed_nodes = []
@@ -106,7 +99,7 @@ def merge(args):
     from_import_string = ""
     import_node = ast.Import()
     setattr(import_node, 'names', [])
-    for node in all_nodes:
+    for node in nodes:
         if isinstance(node['node'], ast.ImportFrom):
             removed_nodes.append(node)
             should_add_node = True
@@ -150,34 +143,40 @@ def merge(args):
     if len(import_node.names) > 0:
         final_string += astunparse.unparse(import_node).strip() + "\n"
     for node in removed_nodes:
-        all_nodes.remove(node)
+        nodes.remove(node)
+    return final_string
 
-    # Extract main module blocks to merge them and put them at the end
+
+def get_main_block(nodes):
     removed_nodes = []
     main_block = ast.If()
     setattr(main_block, 'test', None)
     setattr(main_block, 'body', [])
     setattr(main_block, 'orelse', None)
-    for node in all_nodes:
+    for node in nodes:
         if isinstance(node['node'], ast.If):
             if astunparse.unparse(node['node'].test).strip() == "(__name__ == '__main__')":
-                if main_block.test == None:
+                if main_block.test is None:
                     main_block.test = node['node'].test
                 removed_nodes.append(node)
                 main_block.body += node['node'].body
     for node in removed_nodes:
-        all_nodes.remove(node)    
+        nodes.remove(node)  
+    return main_block
 
-    # Add everything else to final_string
+
+def nodes_to_string(nodes):
+    final_string = ""
     removed_nodes = []
-    last_all_nodes_len = len(all_nodes)
+    used_blocks = set()
+    last_nodes_len = len(nodes)
     while True:     
         # Check if a all dependencies of a blocked and stisfied (not in any definition), and,
         # in that case, add it to the final string and remove the node from the nodes to be merged
-        for node in all_nodes:
+        for node in nodes:
             depedencies_stisfied = True
             for dependency in node['dependencies']:
-                for node2 in all_nodes:
+                for node2 in nodes:
                     if dependency in node2['definitions']:
                         depedencies_stisfied = False
             if depedencies_stisfied:
@@ -187,27 +186,70 @@ def merge(args):
                     used_blocks.add(string)
                     final_string += string + "\n"
         for node in removed_nodes:
-            all_nodes.remove(node)
+            nodes.remove(node)
         removed_nodes = []
-        if len(all_nodes) == last_all_nodes_len:
+        if len(nodes) == last_nodes_len:
             break
-        else:
-            last_all_nodes_len = len(all_nodes)
+        last_nodes_len = len(nodes)
+    return final_string
 
-    if len(all_nodes) > 0:
+
+def problematic_nodes_to_string(nodes):
+    final_string = ""
+    removed_nodes = []
+    used_blocks = set()
+    if len(nodes) > 0:
         # Check cicular dependencies here
         circular_dependencies_object = []
-        for node in all_nodes:
+        for node in nodes:
             for dependency in node['definitions']:
                 circular_dependencies_object.append({'parents': [dependency], 'dependencies': list(node['dependencies'])})
-        print(WARNING + "There are circular dependencies in some of the blocks to be merged: " + " -> ".join(circular_dependencies.find(circular_dependencies_object)) + ENDC)
+        print(WARNING + "There are circular dependencies in some of the blocks to be merged: " + 
+              " -> ".join(circular_dependencies.find(circular_dependencies_object)) + ENDC)
         # Merge block with circular dependencies anyway
-        for node in all_nodes:
+        for node in nodes:
             if node not in removed_nodes:
                 string = astunparse.unparse(node['node']).strip()
                 if string not in used_blocks:
                     used_blocks.add(string)
                     final_string += string + "\n"
+    return final_string
+
+
+def merge(args):
+    file_paths = get_file_paths(args)
+
+    # Parse files
+    parsed_files = []
+    for file_path in file_paths:
+        parsed_files.append(file_parser.parse_file(file_path))
+
+    # Replace dependencies from 'from X import Y'
+    handle_from_import_dependencies(parsed_files)
+
+    # Replace dependencies from other files: <dependency> -> <imported_name>.<dependency>
+    handle_imports_from_other_files(parsed_files)
+
+    # Replace dependencies from same file: <dependency> -> <name>.<dependency>
+    replace_dependencies_from_same_file(parsed_files)
+
+    # Combine all nodes
+    nodes = []
+    for file in parsed_files:
+        for node in file['nodes']:
+            nodes.append(node)     
+
+    # Extract main blocks to merge them and put them at the end
+    main_block = get_main_block(nodes)
+
+    # Add imports to final_string
+    final_string = add_imports(nodes, parsed_files)
+
+    # Add everything else to final_string
+    final_string += nodes_to_string(nodes)
+
+    # Add problematic nodes to final string
+    final_string += problematic_nodes_to_string(nodes)
 
     # Add main block
     final_string += astunparse.unparse(main_block).strip() + "\n"
