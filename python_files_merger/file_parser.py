@@ -1,9 +1,7 @@
 import ast
-import os
-from glob import glob
 import builtins
 import ast_scope
-from .remove_comments import remove_comments
+from .comments import remove_comments
 
 WARNING = '\033[33m'
 ENDC = '\033[0m'
@@ -39,8 +37,6 @@ def get_definitions(root):
     return definitions
 # pylint: enable=too-complex
 # pylint: enable=too-many-nested-blocks
-
-# This could be done a lot better
 
 
 def get_dependencies(node, definitions):
@@ -126,7 +122,7 @@ def parse_string(string):
     return parsed_nodes
 
 
-def parse_file(pathname):
+def parse(pathname):
     with open(pathname, "r", encoding='UTF-8') as file:
         string = file.read()
         parsed_file = {}
@@ -143,21 +139,3 @@ def parse_file(pathname):
         parsed_file["definitions"] = definitions
 
         return parsed_file
-
-
-def parse(args):
-    # Get file paths using args
-    file_paths = set()
-    for arg in args:
-        if os.path.exists(arg):
-            file_paths_list = glob(arg, recursive=True)
-            for file_path in file_paths_list:
-                if os.path.exists(file_path) and os.path.isfile(file_path) and file_path.split(".")[len(file_path.split("."))-1] == 'py':
-                    file_paths.add(file_path)
-        else:
-            print(WARNING + arg + " path do not exist" + ENDC)
-    # Parse files
-    parsed_files = []
-    for file_path in file_paths:
-        parsed_files.append(parse_file(file_path))
-    return parsed_files

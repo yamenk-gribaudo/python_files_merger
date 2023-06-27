@@ -16,7 +16,7 @@ def find_dependencies(dependencies, parent):
     return []
 
 
-def find(dependencies, objects=None, iterations=0):
+def find_circular_dependencies(dependencies, objects=None, iterations=0):
     check_format(dependencies)
     check_format(objects)
     if iterations > len(dependencies):
@@ -31,4 +31,4 @@ def find(dependencies, objects=None, iterations=0):
                     return object_['parents'] + [parent]
                 new_objects.append({"parents": object_['parents'] + [
                                    dependency], 'dependencies': find_dependencies(dependencies, dependency)})
-    return find(dependencies, new_objects, iterations+1)
+    return find_circular_dependencies(dependencies, new_objects, iterations+1)

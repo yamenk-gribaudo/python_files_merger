@@ -5,9 +5,10 @@ import os
 import ast
 import re
 import astunparse
-from .file_parser import parse_file
-from .circular_dependencies import find
+from .file_parser import parse
+from .circular_dependencies import find_circular_dependencies
 
+SUCCESS = '\033[32m'
 WARNING = '\033[33m'
 ENDC = '\033[0m'
 
@@ -220,7 +221,7 @@ def problematic_nodes_to_string(nodes):
                 circular_dependencies_object.append(
                     {'parents': [dependency], 'dependencies': list(node['dependencies'])})
         print(WARNING + "There are circular dependencies in some of the blocks to be merged: " +
-              " -> ".join(find(circular_dependencies_object)) + ENDC)
+              " -> ".join(find_circular_dependencies(circular_dependencies_object)) + ENDC)
         # Merge block with circular dependencies anyway
         for node in nodes:
             if node not in removed_nodes:
@@ -231,14 +232,13 @@ def problematic_nodes_to_string(nodes):
     return final_string
 
 
-def merge(args):
-    file_paths = get_file_paths(args)
+def merge(raw_filepaths, output=None):
+    file_paths = get_file_paths(raw_filepaths)
 
     # Parse files
     parsed_files = []
     for file_path in file_paths:
-        print(file_path)
-        parsed_files.append(parse_file(file_path))
+        parsed_files.append(parse(file_path))
 
     # Replace dependencies from 'from X import Y'
     handle_from_import_dependencies(parsed_files)
@@ -270,5 +270,15 @@ def merge(args):
     # Add main block
     if main_block is not None:
         final_string += astunparse.unparse(main_block).strip() + "\n"
+
+    if final_string != "":
+        if output is not None:
+            with open(output, "w", encoding='UTF-8') as file:
+                file.write(final_string)
+                file.close()
+                print("\n" + SUCCESS + "Merged!!!" + ENDC)
+                print(SUCCESS + "Output was saved in " + output + ENDC)
+    else:
+        print("\n" + WARNING + "Output string is null" + ENDC)
 
     return final_string
