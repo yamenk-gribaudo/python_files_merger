@@ -1,6 +1,5 @@
-[![Build Status](https://secure.travis-ci.org/yamenk-gribaudo/python_files_merger.svg?branch=main)](http://travis-ci.org/christophevg/python_files_merger)
-[![Tests Status](./reports/tests-badge.svg)](./reports/tests-badge.svg)
-[![Coverage Status](./reports/coverage-badge.svg)](./reports/coverage-badge.svg)
+[![tests](./reports/tests-badge.svg)](./reports/tests-badge.svg)
+[![coverage](./reports/coverage-badge.svg)](./reports/junit/report.html)
 
 # Merge files
     python python_files_merger src/*
@@ -9,15 +8,21 @@ or
 
     python python_files_merger src/lorem.py src/ipsum.py
 
-# Lint
+# Contributing 
+
+## Lint
 
     pylint python_files_merger
 
-# Test with coverage
+## Tests
 
-    pytest --junitxml=unittests.xml
+    pytest --junitxml=reports/junit/junit.xml --html=reports/junit/report.html && genbadge tests -o reports/tests-badge.svg
 
-# TODOs:
+## Coverage
+
+    coverage run --source=python_files_merger -m unittest discover && coverage report && coverage xml -o reports/coverage/coverage.xml && genbadge coverage -o reports/coverage-badge.svg
+
+## TODOs:
 - Add test for remove_comments
 - Add test for merger
 - Add test for parser
