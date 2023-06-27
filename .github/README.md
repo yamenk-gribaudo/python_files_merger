@@ -1,6 +1,7 @@
 [![Build Status](https://secure.travis-ci.org/yamenk-gribaudo/python_files_merger.svg?branch=main)](http://travis-ci.org/christophevg/python_files_merger)
 [![Documentation Status](https://readthedocs.org/projects/python_files_merger/badge/?version=latest)](https://python_files_merger.readthedocs.io/en/latest/?badge=latest)
-[![Coverage Status](https://coveralls.io/repos/github/yamenk-gribaudo/python_files_merger/badge.svg?branch=main)](https://coveralls.io/github/yamenk-gribaudo/python_files_merger?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/yamenk-gribaudo/python_files_merger/tests-badge.svg?branch=main)](https://coveralls.io/github/yamenk-gribaudo/python_files_merger?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/yamenk-gribaudo/python_files_merger/coverage.svg?branch=main)](https://coveralls.io/github/yamenk-gribaudo/python_files_merger?branch=main)
 
 # Merge files
     python python_files_merger src/*
@@ -15,7 +16,7 @@ or
 
 # Test with coverage
 
-    python -m pytest --junitxml=unittests.xml
+    pytest --junitxml=unittests.xml
 
 # TODOs:
 - Add test for remove_comments
