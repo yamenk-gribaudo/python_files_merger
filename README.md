@@ -1,6 +1,6 @@
 [![Build Status](https://secure.travis-ci.org/yamenk-gribaudo/python_files_merger.svg?branch=main)](http://travis-ci.org/christophevg/python_files_merger)
 [![Tests Status](./reports/tests-badge.svg)](./reports/tests-badge.svg)
-[![Coverage Status](./reports/coverage-badge)](./reports/coverage-badge)
+[![Coverage Status](./reports/coverage-badge.svg)](./reports/coverage-badge.svg)
 
 # Merge files
     python python_files_merger src/*
