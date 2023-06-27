@@ -14,11 +14,15 @@ or
 
     pylint python_files_merger
 
-## Tests
+## Tests, coverage and badges
+
+You can click on the tests or coverage badges to check the code coverage and tests coverage. We should create the badges in github workflows. Also we should add workflow status to the badges
+
+Tests and create tests badge:
 
     pytest --junitxml=reports/junit/junit.xml --html=reports/junit/report.html && genbadge tests -o reports/tests-badge.svg
 
-## Coverage
+Coverage and create coverage badge:
 
     coverage run --source=python_files_merger -m unittest discover && coverage report && coverage html && coverage xml -o reports/coverage/coverage.xml && genbadge coverage -o reports/coverage-badge.svg
 
@@ -28,4 +32,4 @@ or
 - Add test for parser
 - Improve circular dependencies (CDs) algorithm, it should return all the CDs instead of just the first one
 - Add definitions collition check before merging
-- Add test coverage
+- Add badges generation in github workflow
