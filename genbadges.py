@@ -9,8 +9,13 @@ version.write_to("badges/version.svg", use_shields=False)
 
 # License
 license_ = Badge(left_txt="License",
-                 right_txt="MIT", color="blue")
+                 right_txt="MIT", color="grey")
 license_.write_to("badges/license.svg", use_shields=False)
+
+# Python
+license_ = Badge(left_txt="Python",
+                 right_txt="3.8 | 3.9 | 3.10 | 3.11", color="blue")
+license_.write_to("badges/python.svg", use_shields=False)
 
 # Tests
 subprocess.check_call(

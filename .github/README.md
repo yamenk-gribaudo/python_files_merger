@@ -1,3 +1,4 @@
+![Python](https://raw.githubusercontent.com/yamenk-gribaudo/python_files_merger/master/badges/python.svg)
 ![Version](https://raw.githubusercontent.com/yamenk-gribaudo/python_files_merger/master/badges/version.svg)
 ![License](https://raw.githubusercontent.com/yamenk-gribaudo/python_files_merger/master/badges/license.svg)
 ![Workflow](https://github.com/yamenk-gribaudo/python_files_merger/actions/workflows/test.yml/badge.svg)
