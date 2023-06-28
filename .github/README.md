@@ -1,8 +1,8 @@
-![version](https://raw.githubusercontent.com/yamenk-gribaudo/python_files_merger/master/badges/version.svg)
-![license](https://raw.githubusercontent.com/yamenk-gribaudo/python_files_merger/master/badges/license.svg)
-![workflow](https://github.com/yamenk-gribaudo/python_files_merger/actions/workflows/test.yml/badge.svg)
-[![tests](https://raw.githubusercontent.com/yamenk-gribaudo/python_files_merger/master/badges/tests.svg)](https://htmlpreview.github.io/?https://github.com/yamenk-gribaudo/python_files_merger/blob/master/reports/junit/report.html)
-[![coverage](https://raw.githubusercontent.com/yamenk-gribaudo/python_files_merger/master/badges/coverage.svg)](https://htmlpreview.github.io/?https://github.com/yamenk-gribaudo/python_files_merger/blob/master/htmlcov/index.html)
+![Version](https://raw.githubusercontent.com/yamenk-gribaudo/python_files_merger/master/badges/version.svg)
+![License](https://raw.githubusercontent.com/yamenk-gribaudo/python_files_merger/master/badges/license.svg)
+![Workflow](https://github.com/yamenk-gribaudo/python_files_merger/actions/workflows/test.yml/badge.svg)
+[![Tests](https://raw.githubusercontent.com/yamenk-gribaudo/python_files_merger/master/badges/tests.svg)](https://htmlpreview.github.io/?https://github.com/yamenk-gribaudo/python_files_merger/blob/master/reports/junit/report.html)
+[![Coverage](https://raw.githubusercontent.com/yamenk-gribaudo/python_files_merger/master/badges/coverage.svg)](https://htmlpreview.github.io/?https://github.com/yamenk-gribaudo/python_files_merger/blob/master/htmlcov/index.html)
 
 # Usage
 
