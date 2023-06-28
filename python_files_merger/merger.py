@@ -15,6 +15,9 @@ ENDC = '\033[0m'
 
 
 def get_file_paths(args):
+    if not isinstance(args, list):
+        print("\n" + WARNING + "Input must be a list rather than a string" + ENDC)
+        return []
     file_paths = set()
     for arg in args:
         for file in glob(arg, recursive=True):

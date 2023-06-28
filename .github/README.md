@@ -42,21 +42,21 @@ You can download the repo and run the merger with `python -m python_files_merger
 
     pylint python_files_merger
 
-## Tests with coverage
+## Tests 
 
-You can click on the tests or coverage badges to check the code coverage and tests coverage
+You can click on the tests badge to check the tests status
+
+    pytest 
+    
+## Coverage
+
+You can clickon the coverage badge to check the code coverage
 
     coverage run --source=python_files_merger -m unittest discover && coverage report
 ## Reports and badges
 
-Right now, badges are generated locally and uploaded to github. We should really do this in github workflows. 
+Right now, badges are generated locally and uploaded to github, we should really do this in github workflows. 
 
 To generate reports and badges:
 
     python genbadges.py
-
-## TODOs:
-
-- Add test for merger
-- Improve circular dependencies (CDs) algorithm, it should return all the CDs instead of just the first one
-- Add badges generation in github workflow
