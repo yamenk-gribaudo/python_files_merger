@@ -1,6 +1,6 @@
-![Workflow](https://github.com/yamenk-gribaudo/python_files_merger/actions/workflows/test.yml/badge.svg)
-[![Tests](https://raw.githubusercontent.com/yamenk-gribaudo/python_files_merger/master/reports/tests-badge.svg)](https://htmlpreview.github.io/?https://github.com/yamenk-gribaudo/python_files_merger/blob/master/reports/junit/report.html)
-[![Coverage](https://raw.githubusercontent.com/yamenk-gribaudo/python_files_merger/master/reports/coverage-badge.svg)](https://htmlpreview.github.io/?https://github.com/yamenk-gribaudo/python_files_merger/blob/master/htmlcov/index.html)
+![workflow](https://github.com/yamenk-gribaudo/python_files_merger/actions/workflows/test.yml/badge.svg)
+[![tests](https://raw.githubusercontent.com/yamenk-gribaudo/python_files_merger/master/reports/tests-badge.svg)](https://htmlpreview.github.io/?https://github.com/yamenk-gribaudo/python_files_merger/blob/master/reports/junit/report.html)
+[![coverage](https://raw.githubusercontent.com/yamenk-gribaudo/python_files_merger/master/reports/coverage-badge.svg)](https://htmlpreview.github.io/?https://github.com/yamenk-gribaudo/python_files_merger/blob/master/htmlcov/index.html)
 
 # Usage
 

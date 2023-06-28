@@ -4,10 +4,10 @@
 import ast
 import re
 from glob import glob
+import json
 import astunparse
 from .file_parser import parse
 from .circular_dependencies import find_circular_dependencies
-import json
 
 SUCCESS = '\033[32m'
 WARNING = '\033[33m'
