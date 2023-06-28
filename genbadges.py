@@ -14,7 +14,7 @@ license_.write_to("badges/license.svg", use_shields=False)
 
 # Python
 license_ = Badge(left_txt="Python",
-                 right_txt="3.8 | 3.9 | 3.10 | 3.11", color="blue")
+                 right_txt="3.8 | 3.9 | 3.10 | 3.11", color="#007ec6")
 license_.write_to("badges/python.svg", use_shields=False)
 
 # Tests
