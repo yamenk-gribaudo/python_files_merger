@@ -1,6 +1,8 @@
+![version](https://raw.githubusercontent.com/yamenk-gribaudo/python_files_merger/master/badges/version.svg)
+![license](https://raw.githubusercontent.com/yamenk-gribaudo/python_files_merger/master/badges/license.svg)
 ![workflow](https://github.com/yamenk-gribaudo/python_files_merger/actions/workflows/test.yml/badge.svg)
-[![tests](https://raw.githubusercontent.com/yamenk-gribaudo/python_files_merger/master/reports/tests-badge.svg)](https://htmlpreview.github.io/?https://github.com/yamenk-gribaudo/python_files_merger/blob/master/reports/junit/report.html)
-[![coverage](https://raw.githubusercontent.com/yamenk-gribaudo/python_files_merger/master/reports/coverage-badge.svg)](https://htmlpreview.github.io/?https://github.com/yamenk-gribaudo/python_files_merger/blob/master/htmlcov/index.html)
+[![tests](https://raw.githubusercontent.com/yamenk-gribaudo/python_files_merger/master/badges/tests.svg)](https://htmlpreview.github.io/?https://github.com/yamenk-gribaudo/python_files_merger/blob/master/reports/junit/report.html)
+[![coverage](https://raw.githubusercontent.com/yamenk-gribaudo/python_files_merger/master/badges/coverage.svg)](https://htmlpreview.github.io/?https://github.com/yamenk-gribaudo/python_files_merger/blob/master/htmlcov/index.html)
 
 # Usage
 
@@ -39,17 +41,18 @@ You can download the repo and run the merger with `python -m python_files_merger
 
     pylint python_files_merger
 
-## Tests, coverage and badges
+## Tests with coverage
 
-You can click on the tests or coverage badges to check the code coverage and tests coverage. We should create the badges in github workflows. Also we should add workflow status to the badges
+You can click on the tests or coverage badges to check the code coverage and tests coverage
 
-Tests and create tests badge:
+    coverage run --source=python_files_merger -m unittest discover && coverage report
+## Reports and badges
 
-    pytest --junitxml=reports/junit/junit.xml --html=reports/junit/report.html && genbadge tests -o reports/tests-badge.svg
+Right now, badges are generated locally and uploaded to github. We should really do this in github workflows. 
 
-Coverage and create coverage badge:
+To generate reports and badges:
 
-    coverage run --source=python_files_merger -m unittest discover && coverage report && coverage html && coverage xml -o reports/coverage/coverage.xml && genbadge coverage -o reports/coverage-badge.svg
+    python genbadges.py
 
 ## TODOs:
 
