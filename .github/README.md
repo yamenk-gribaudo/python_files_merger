@@ -6,7 +6,7 @@
 
 # Usage
 
-## Shell
+## Shell example
 
     python -m python_files_merger src/*
 
@@ -16,7 +16,7 @@ or
 
 You can see shell option with `python -m python_files_merger -h`
 
-## In file
+## File example
 
     import python_files_merger
 
