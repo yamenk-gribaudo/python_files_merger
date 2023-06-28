@@ -3,4 +3,4 @@ from .merger import merge
 from .comments import remove_comments
 from .file_parser import parse
 
-__version__ = "1.0.27"
+__version__ = "1.0.28"
