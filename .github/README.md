@@ -63,3 +63,9 @@ Right now, badges are generated locally and uploaded to github, we should really
 To generate reports and badges:
 
     python genbadges.py
+
+## Upload to pip
+
+1. Update python_files_merger version in `python_files_merger/__init__.py`.
+1. Run `python setup.py sdist` to create the dist tar which will be uploadad to pip.
+1. Run `python -m twine upload dist/$(ls dist | tail -n 1)` to upload the most up to date tar folder in the sir directory.

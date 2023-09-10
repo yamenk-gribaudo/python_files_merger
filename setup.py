@@ -19,7 +19,8 @@ CLASSIFIERS = [
 
 ]
 INSTALL_REQUIRES = [
-
+    "astunparse",
+    "ast_scope"
 ]
 ENTRY_POINTS = {
 
